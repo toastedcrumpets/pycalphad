@@ -205,7 +205,7 @@ cpdef double hyperplane(double[:,::1] compositions,
     cdef int fixed_index = 0
     cdef int saved_trial = 0
     cdef int min_df
-    cdef int max_iterations = 1000
+    cdef int max_iterations = 10000
     cdef int iterations = 0
     cdef int idx, ici, comp_idx, simplex_idx, trial_idx, chempot_idx
     cdef bint tmp3

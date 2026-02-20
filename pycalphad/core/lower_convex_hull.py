@@ -161,7 +161,7 @@ def lower_convex_hull(global_grid, state_variables, conds_keys, phase_record_fac
         result_array_GM_values[it.multi_index] = \
             hyperplane(idx_global_grid_X_values, idx_global_grid_GM_values,
                        idx_result_array_MU_values, idx_fixed_chempot_indices, idx_fixed_lincomb_molefrac_coefs, idx_fixed_lincomb_molefrac_rhs,
-                       idx_result_array_NP_values, idx_result_array_points_values)
+                       idx_result_array_NP_values, idx_result_array_points_values, 1000)
         # Copy phase values out
         points = result_array_points_values[it.multi_index]
         result_array_Phase_values[it.multi_index][:num_comps] = global_grid_Phase_values[grid_index].take(points, axis=0)[:num_comps]

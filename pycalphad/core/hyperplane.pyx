@@ -150,7 +150,8 @@ cpdef double hyperplane(double[:,::1] compositions,
                         double[:, ::1] fixed_lincomb_molefrac_coefs,
                         double[::1] fixed_lincomb_molefrac_rhs,
                         double[::1] result_fractions,
-                        int[::1] result_simplex) except *:
+                        int[::1] result_simplex,
+                        int max_iterations) except *:
     """
     Find chemical potentials which approximate the tangent hyperplane
     at the given composition.
@@ -205,7 +206,6 @@ cpdef double hyperplane(double[:,::1] compositions,
     cdef int fixed_index = 0
     cdef int saved_trial = 0
     cdef int min_df
-    cdef int max_iterations = 10000
     cdef int iterations = 0
     cdef int idx, ici, comp_idx, simplex_idx, trial_idx, chempot_idx
     cdef bint tmp3

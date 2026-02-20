@@ -6,4 +6,5 @@ cpdef double hyperplane(double[:,::1] compositions,
                         double[:, ::1] fixed_lincomb_molefrac_coefs,
                         double[::1] fixed_lincomb_molefrac_rhs,
                         double[::1] result_fractions,
-                        int[::1] result_simplex) except *
+                        int[::1] result_simplex,
+                        int max_iterations) except *

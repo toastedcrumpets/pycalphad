@@ -16,7 +16,7 @@ from .compsets import get_compsets, find_two_phase_region_compsets
 from .zpf_boundary_sets import ZPFBoundarySets
 
 def map_binary(dbf, comps, phases, conds, eq_kwargs=None, calc_kwargs=None,
-               boundary_sets=None, verbose=False, summary=False,):
+               boundary_sets=None, verbose=False, summary=False, max_iterations=1000):
     """
     Map a binary T-X phase diagram
 
@@ -34,6 +34,8 @@ def map_binary(dbf, comps, phases, conds, eq_kwargs=None, calc_kwargs=None,
         Print verbose output for mapping
     boundary_sets : ZPFBoundarySets
         Existing ZPFBoundarySets
+    max_iterations : int
+        Maximum number of iterations for the lower convex hull hyperplane search.
 
     Returns
     -------
@@ -114,7 +116,7 @@ def map_binary(dbf, comps, phases, conds, eq_kwargs=None, calc_kwargs=None,
         grid = calculate(dbf, comps, phases, fake_points=True, output='GM',
                          T=T, P=unitless_conds[v.P], N=1, model=models,
                          parameters=parameters, to_xarray=False, **calc_kwargs)
-        hull = starting_point(eq_conds, statevars, prxs, grid)
+        hull = starting_point(eq_conds, statevars, prxs, grid, max_iterations=max_iterations)
         convex_hull_time += time.time() - hull_time
         convex_hulls_calculated += 1
         while Xmax_visited < Xmax:
@@ -126,7 +128,7 @@ def map_binary(dbf, comps, phases, conds, eq_kwargs=None, calc_kwargs=None,
             Xeq = hull_compsets.mean_composition
             eq_conds[comp_cond] = [float(Xeq)]
             eq_time = time.time()
-            start_point = starting_point(eq_conds, statevars, prxs, grid)
+            start_point = starting_point(eq_conds, statevars, prxs, grid, max_iterations=max_iterations)
             eq_ds = _solve_eq_at_conditions(start_point, prxs, grid, list(unitless_conds.keys()), statevars, False)
             equilibrium_time += time.time() - eq_time
             equilibria_calculated += 1
@@ -151,7 +153,7 @@ def map_binary(dbf, comps, phases, conds, eq_kwargs=None, calc_kwargs=None,
                 eq_conds[comp_cond] = [float(Xmax_visited + dX)]
                 eq_time = time.time()
                 # TODO: starting point could be improved by basing it off the previous calculation
-                start_point = starting_point(eq_conds, statevars, prxs, grid)
+                start_point = starting_point(eq_conds, statevars, prxs, grid, max_iterations=max_iterations)
                 eq_ds = _solve_eq_at_conditions(start_point, prxs, grid, list(unitless_conds.keys()), statevars, False)
                 equilibrium_time += time.time() - eq_time
                 equilibria_calculated += 1

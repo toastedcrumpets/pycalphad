@@ -39,7 +39,7 @@ def global_min_is_possible(conditions, state_variables):
     return global_min
 
 
-def starting_point(conditions, state_variables, phase_records, grid):
+def starting_point(conditions, state_variables, phase_records, grid, max_iterations):
     """
     Find a starting point for the solution using a sample of the system energy surface.
 
@@ -54,6 +54,8 @@ def starting_point(conditions, state_variables, phase_records, grid):
     grid : Dataset
         A sample of the energy surface of the system. The sample should at least
         cover the same state variable space as specified in the conditions.
+    max_iterations : int
+        Maximum number of iterations for the lower convex hull hyperplane search.
 
     Returns
     -------
@@ -104,7 +106,7 @@ def starting_point(conditions, state_variables, phase_records, grid):
     result = LightDataset(ds_vars, coords=coord_dict, attrs={'engine': 'pycalphad %s' % pycalphad_version})
 
     if global_min_enabled:
-        result = lower_convex_hull(grid, state_variables, sorted(conditions.keys(), key=str), phase_records, result)
+        result = lower_convex_hull(grid, state_variables, sorted(conditions.keys(), key=str), phase_records, result, max_iterations=max_iterations)
     else:
         raise NotImplementedError('Conditions not yet supported')
 

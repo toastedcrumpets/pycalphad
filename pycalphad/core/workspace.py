@@ -312,7 +312,8 @@ class Workspace:
     solver: SolverBase = SolverField(lambda obj: Solver(verbose=obj.verbose), depends_on=['verbose'])
     # eq is set by a callback in the EquilibriumCalculationField (TypedField)
     eq: Optional[LightDataset] = EquilibriumCalculationField(depends_on=['phase_record_factory', 'conditions', 'calc_opts', 'solver'])
-
+    hyperplane_max_iter: int = TypedField(lambda _: 1000)
+    
     def __init__(self, *args, **kwargs):
         self._suspend_dependency_updates = True
         self._eq = None # manually initialized since we don't initialize the public name 'eq' (see below)
@@ -359,7 +360,7 @@ class Workspace:
         grid = calculate(self.database, self.components, self.phases, model=self.models.unwrap(), fake_points=True,
                         phase_records=self.phase_record_factory, output='GM', parameters=self.parameters.unwrap(),
                         to_xarray=False, conditions=local_conds, **grid_opts)
-        properties = starting_point(unitless_conds, state_variables, self.phase_record_factory, grid)
+        properties = starting_point(unitless_conds, state_variables, self.phase_record_factory, grid, max_iterations=self.hyperplane_max_iter)
         return _solve_eq_at_conditions(properties, self.phase_record_factory, grid,
                                        list(unitless_conds.keys()), state_variables,
                                        self.verbose, solver=self.solver)

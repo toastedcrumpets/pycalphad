@@ -8,7 +8,7 @@ from pycalphad.variables import ChemicalPotential, MassFraction, MoleFraction, I
 import numpy as np
 
 
-def lower_convex_hull(global_grid, state_variables, conds_keys, phase_record_factory, result_array):
+def lower_convex_hull(global_grid, state_variables, conds_keys, phase_record_factory, result_array, max_iterations):
     """
     Find the simplices on the lower convex hull satisfying the specified
     conditions in the result array.
@@ -26,6 +26,8 @@ def lower_convex_hull(global_grid, state_variables, conds_keys, phase_record_fac
     result_array : Dataset
         This object will be modified!
         Coordinates correspond to conditions axes.
+    max_iterations : int
+        Maximum number of iterations used by the hyperplane search.
 
     Returns
     -------
@@ -161,7 +163,7 @@ def lower_convex_hull(global_grid, state_variables, conds_keys, phase_record_fac
         result_array_GM_values[it.multi_index] = \
             hyperplane(idx_global_grid_X_values, idx_global_grid_GM_values,
                        idx_result_array_MU_values, idx_fixed_chempot_indices, idx_fixed_lincomb_molefrac_coefs, idx_fixed_lincomb_molefrac_rhs,
-                       idx_result_array_NP_values, idx_result_array_points_values, 1000)
+                       idx_result_array_NP_values, idx_result_array_points_values, max_iterations)
         # Copy phase values out
         points = result_array_points_values[it.multi_index]
         result_array_Phase_values[it.multi_index][:num_comps] = global_grid_Phase_values[grid_index].take(points, axis=0)[:num_comps]
